@@ -1,5 +1,6 @@
 import pickle
 import time
+import requests
 from selenium import webdriver
 from selenium.webdriver.chrome.service import Service as ChromeService
 from webdriver_manager.chrome import ChromeDriverManager
@@ -140,6 +141,10 @@ while True:  # Infinite loop for continuous checking
         except Exception as e:
             print("Sign out and reload 버튼이 존재하지 않거나 클릭할 수 없습니다:", e)
 
+        TOKEN = '7767421130:AAGTdmCNuClqEi9kYOET6c_RZKOwUnIl-HM'
+        CHAT_ID = '7580293509'  # 올바른 채팅 ID 입력
+        TELEGRAM_URL = f'https://api.telegram.org/bot{TOKEN}/sendMessage'
+        
         # Find and input course code
         course_input = WebDriverWait(browser, 10).until(
             EC.presence_of_element_located((By.XPATH, "//input[@ng-model='pendingCourse.course']"))
@@ -171,7 +176,6 @@ while True:  # Infinite loop for continuous checking
 
         # Find open sections
         open_sections = [status for status in section_statuses if status and status != "Closed"]
-
         if len(open_sections) >= 2:  # Alert only when two or more sections are open
             message = f"🚨 {len(open_sections)} sections are now OPEN! Available seats: {', '.join(open_sections)}. Check registration now!"
             payload = {'chat_id': CHAT_ID, 'text': message}
@@ -204,63 +208,3 @@ while True:  # Infinite loop for continuous checking
 
     time.sleep(60)  # Wait for 1 minute before next attempt
 
-# pickle.dump(browser.get_cookies(), open("cookies.pkl", "wb"))
-# print("쿠키가 저장되었습니다.")
-
-# # 쿠키 로드
-# cookies = pickle.load(open("cookies.pkl", "rb"))
-# for cookie in cookies:
-#     browser.add_cookie(cookie)
-
-
-
-# # 페이지 새로 고침하여 로그인 세션 유지
-# browser.refresh()
-# # 'Yes, this is my device' 버튼 클릭
-# try:
-#     trust_button = browser.find_element(By.XPATH, "//button[@id='trust-browser-button']")
-#     trust_button.click()
-#     print("디바이스 신뢰 버튼을 클릭했습니다.")
-# except Exception as e:
-#     print(f"버튼 클릭 중 오류 발생: {e}")
-
-# # 'Student Schedule' 클릭
-# try:
-#     schedule_button = browser.find_element(By.XPATH, "//span[@class='ng-binding' and text()='Student Schedule']")
-#     schedule_button.click()
-#     print("Student Schedule 버튼을 클릭했습니다.")
-# except Exception as e:
-#     print(f"버튼 클릭 중 오류 발생: {e}")
-
-# # 'Registration - Drop/Add' 클릭
-# try:
-#     drop_add_link = browser.find_element(By.XPATH, "//a[@id='Registration - Drop/Add' and @class='header-dropdown-item ng-binding ng-scope']")
-#     drop_add_link.click()
-#     print("Registration - Drop/Add 링크를 클릭했습니다.")
-# except Exception as e:
-#     print(f"링크 클릭 중 오류 발생: {e}")
-
-
-# # 수강신청 반복
-# courses_to_register = ["cmsc351", "cmsc430", "cmsc421"]  # 수강신청할 과목 리스트
-
-# for course in courses_to_register:
-#     try:
-#         # 입력 필드 선택
-#         course_input = browser.find_element(By.XPATH, "//input[@name='pendingCourseCourse' and @type='text']")
-        
-#         # 과목 입력
-#         course_input.clear()  # 이전에 입력된 값 삭제
-#         course_input.send_keys(course)  # 새로운 과목 입력
-        
-#         # 과목 추가 (필요시 '추가' 버튼 클릭)
-#         add_button = browser.find_element(By.XPATH, "//button[@type='button' and text()='Add']")
-#         add_button.click()
-        
-#         print(f"{course} 과목을 추가했습니다.")
-#         time.sleep(2)  # 2초 대기 (부하를 줄이기 위해)
-
-#     except Exception as e:
-#         print(f"과목 추가 중 오류 발생: {e}")
-
-# print("모든 과목을 추가 완료했습니다.")
